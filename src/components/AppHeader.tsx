@@ -11,6 +11,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ProfileModal } from "./ProfileModal";
+import { ChevronDown, LogOut, UserIcon } from "lucide-react";
+import logo from "@/assets/TAGGY_LOGO.png";
 
 export function AppHeader() {
   const { user, signOut, setUserState } = useAuth();
@@ -23,8 +25,8 @@ export function AppHeader() {
     <header className="bg-primary text-primary-foreground shadow-sm">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
         <Link to="/dashboard" className="flex items-center gap-2 font-semibold text-lg">
-          <img src="@/assets/TAGGY_LOGO.png" alt="Taggy EcoCalc Logo" className="h-6 w-6" />
-          Taggy EcoCalc
+          <img src={logo} alt="Taggy EcoCalc Logo" className="h-6 w-19" />
+          EcoCalc
         </Link>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
