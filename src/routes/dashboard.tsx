@@ -9,6 +9,7 @@ import {
   getFuelSaving,
   getPaperEmission,
   type Timescale,
+  downloadEsgReport,
 } from "@/lib/api";
 import { AppHeader } from "@/components/AppHeader";
 import { MetricCharts } from "@/components/MetricCharts";
@@ -97,7 +98,7 @@ function Dashboard() {
 
       <main className="mx-auto max-w-6xl px-6 py-8">
         <section className="rounded-l border bg-card p-6 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md">
-          <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
+          <div className="mb-10 flex flex-wrap items-center justify-between gap-3">
             <div>
               <h1 className="text-2xl font-semibold text-primary">
                 Simulador de Impacto Ambiental
@@ -109,21 +110,28 @@ function Dashboard() {
 
             <div className="flex flex-wrap gap-2">
               <Button variant="default" onClick={() => setVehiclesOpen(true)}>
-                <Settings2 className="mr-2 h-4 w-4" /> Gerenciar veículos
+                <Settings2 className="mr-2 h-4 w-2" /> Gerenciar veículos
               </Button>
 
               <Button
                 variant="outline"
                 onClick={() => exportDashboardPdf(exportRef.current, "dashboard-taggy.pdf")}
               >
-                <Download className="mr-2 h-4 w-4" /> Exportar Dashboard
+                <Download className="mr-2 h-4 w-2" /> Exportar Dashboard
               </Button>
 
               <Button
                 variant="outline"
-                onClick={() => exportDashboardPdf(exportRef.current, "esg-report.pdf")}
+                onClick={() =>
+                  downloadEsgReport({
+                    emission: emissionQ.data?.totalValue ?? 0,
+                    fuel: fuelQ.data?.totalValue ?? 0,
+                    paper: paperQ.data?.totalValue ?? 0,
+                    frequency: frequency,
+                  })
+                }
               >
-                <Download className="mr-2 h-4 w-4" /> Relatório ESG
+                <Download className="mr-2 h-4 w-2" /> Relatório ESG
               </Button>
             </div>
           </div>
@@ -191,9 +199,9 @@ function Dashboard() {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="D">Dias (D)</SelectItem>
-                  <SelectItem value="M">Meses (M)</SelectItem>
-                  <SelectItem value="Y">Anos (Y)</SelectItem>
+                  <SelectItem value="D">Dias</SelectItem>
+                  <SelectItem value="M">Meses</SelectItem>
+                  <SelectItem value="Y">Anos</SelectItem>
                 </SelectContent>
               </Select>
             </div>
