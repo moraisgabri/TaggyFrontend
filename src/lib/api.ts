@@ -215,3 +215,86 @@ export async function getFuelSaving(q: CalcQuery): Promise<{ totalValue: number 
 export async function getPaperEmission(q: CalcQuery): Promise<{ totalValue: number }> {
   return await request(calcUrl("/paper-emission", q));
 }
+
+// ---------- Series (progression over time) ----------
+// NOTE: endpoints below are placeholders — backend will provide real ones.
+// For now we mock a linear progression based on the current query.
+export interface SeriesPoint {
+  label: string;
+  value: number;
+}
+
+function timescaleLabel(t: Timescale, i: number): string {
+  if (t === "Y") return `Ano ${i + 1}`;
+  if (t === "M") return `Mês ${i + 1}`;
+  return `Dia ${i + 1}`;
+}
+
+async function fetchSeries(path: string, q: CalcQuery, factor: number): Promise<SeriesPoint[]> {
+  try {
+    console.log({ path, q, factor });
+
+    const data = await request<any>(calcUrl(path, q));
+
+    console.log({ data });
+    if (Array.isArray(data)) {
+      return data.map((d, i) => ({
+        label: d.label ?? d.name ?? timescaleLabel(q.Timescale, i),
+        value: asNumber(d.value ?? d),
+      }));
+    }
+  } catch {
+    const points = 10;
+    const perUnit = q.Frequency * (q.Timescale === "Y" ? 365 : q.Timescale === "M" ? 30 : 1);
+    return Array.from({ length: points }, (_, i) => ({
+      label: timescaleLabel(q.Timescale, i),
+      value: perUnit * (i + 1) * factor,
+    }));
+  }
+}
+
+export function getEmissionSeries(q: CalcQuery) {
+  return fetchSeries("/emission-series", q, 0.012);
+}
+export function getFuelSavingSeries(q: CalcQuery) {
+  return fetchSeries("/fuel-saving-series", q, 0.05);
+}
+export function getPaperEmissionSeries(q: CalcQuery) {
+  return fetchSeries("/paper-emission-series", q, 0.45);
+}
+
+export async function downloadEsgReport(data: {
+  emission: number;
+  fuel: number;
+  paper: number;
+  frequency: number;
+}): Promise<void> {
+  const headers = new Headers();
+  const token = getToken();
+  if (token) headers.set("Authorization", `Bearer ${token}`);
+
+  const res = await fetch(`${API_BASE}/download/pdf`, {
+    method: "POST",
+    headers: {
+      ...Object.fromEntries(headers.entries()),
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!res.ok) {
+    const text = await res.text();
+    const msg = text || `Download failed (${res.status})`;
+    throw new ApiError(msg, res.status);
+  }
+
+  const blob = await res.blob();
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "relatorio-esg.pdf";
+  document.body.appendChild(a);
+  a.click();
+  window.URL.revokeObjectURL(url);
+  document.body.removeChild(a);
+}

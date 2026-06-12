@@ -1,16 +1,18 @@
 import { createFileRoute, useRouter } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useQueries, useQuery } from "@tanstack/react-query";
-import { Car, Leaf, Fuel, FileText, Settings2 } from "lucide-react";
+import { Car, Leaf, Fuel, FileText, Settings2, Download } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import {
   listVehicles,
   getEmission,
   getFuelSaving,
   getPaperEmission,
+  downloadEsgReport,
   type Timescale,
 } from "@/lib/api";
 import { AppHeader } from "@/components/AppHeader";
+import { MetricCharts } from "@/components/MetricCharts";
 import { VehiclesModal } from "@/components/VehiclesModal";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -22,6 +24,7 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
+import { exportDashboardPdf } from "@/lib/pdf-export";
 
 export const Route = createFileRoute("/dashboard")({
   component: Dashboard,
@@ -40,6 +43,7 @@ function Dashboard() {
   const [timescale, setTimescale] = useState<Timescale>("D");
   const [vehicleId, setVehicleId] = useState<string>("");
   const [vehiclesOpen, setVehiclesOpen] = useState(false);
+  const exportRef = useRef<HTMLDivElement>(null);
 
   const { data: vehicles = [] } = useQuery({
     queryKey: ["vehicles"],
@@ -80,6 +84,20 @@ function Dashboard() {
 
   const [emissionQ, fuelQ, paperQ] = results;
 
+  const handleDownloadEsgReport = async () => {
+    try {
+      await downloadEsgReport({
+        emission: emissionQ.data?.totalValue ?? 0,
+        fuel: fuelQ.data?.totalValue ?? 0,
+        paper: paperQ.data?.totalValue ?? 0,
+        frequency,
+      });
+    } catch (error) {
+      console.error("Erro ao baixar relatório:", error);
+      // Você pode adicionar um toast de erro aqui se desejar
+    }
+  };
+
   if (!loaded || !isAuthenticated) {
     return (
       <div className="flex min-h-screen items-center justify-center">
@@ -103,9 +121,23 @@ function Dashboard() {
                 Calcule a economia gerada pela automação de passagens.
               </p>
             </div>
-            <Button variant="outline" onClick={() => setVehiclesOpen(true)}>
-              <Settings2 className="mr-2 h-4 w-4" /> Gerenciar veículos
-            </Button>
+
+            <div className="flex flex-wrap gap-2">
+              <Button variant="outline" onClick={() => setVehiclesOpen(true)}>
+                <Settings2 className="mr-2 h-4 w-4" /> Gerenciar veículos
+              </Button>
+
+              <Button
+                variant="outline"
+                onClick={() => exportDashboardPdf(exportRef.current, "dashboard-taggy.pdf")}
+              >
+                <Download className="mr-2 h-4 w-4" /> Exportar Dashboard
+              </Button>
+
+              <Button variant="outline" onClick={handleDownloadEsgReport}>
+                <Download className="mr-2 h-4 w-4" /> Relatório ESG
+              </Button>
+            </div>
           </div>
 
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -172,38 +204,50 @@ function Dashboard() {
           </div>
         </section>
 
-        <section className="mt-6 grid gap-4 md:grid-cols-3">
-          <MetricCard
-            accent="success"
-            icon={<Leaf className="h-5 w-5" />}
-            label="Emissão evitada por frequência"
-            value={emissionQ.data?.totalValue}
-            unit="kg"
-            loading={emissionQ.isLoading}
-            error={emissionQ.error}
-            description="CO₂ deixado de ser emitido pela passagem automatizada."
-          />
-          <MetricCard
-            accent="info"
-            icon={<Fuel className="h-5 w-5" />}
-            label="Gasolina economizada por frequência"
-            value={fuelQ.data?.totalValue}
-            unit="L"
-            loading={fuelQ.isLoading}
-            error={fuelQ.error}
-            description="Evita o desperdício em marcha lenta nas cabines manuais."
-          />
-          <MetricCard
-            accent="warning"
-            icon={<FileText className="h-5 w-5" />}
-            label="Emissão de papel por frequência"
-            value={paperQ.data?.totalValue}
-            unit="g"
-            loading={paperQ.isLoading}
-            error={paperQ.error}
-            description="Redução de cupons térmicos impressos (8x7.5cm)."
-          />
-        </section>
+        <div ref={exportRef} className="space-y-6 mt-6">
+          <section className="mt-6 grid gap-4 md:grid-cols-3">
+            <MetricCard
+              accent="success"
+              icon={<Leaf className="h-5 w-5" />}
+              label="Emissão evitada por frequência"
+              value={emissionQ.data?.totalValue}
+              unit="kg"
+              loading={emissionQ.isLoading}
+              error={emissionQ.error}
+              description="CO₂ deixado de ser emitido pela passagem automatizada."
+            />
+            <MetricCard
+              accent="info"
+              icon={<Fuel className="h-5 w-5" />}
+              label="Gasolina economizada por frequência"
+              value={fuelQ.data?.totalValue}
+              unit="L"
+              loading={fuelQ.isLoading}
+              error={fuelQ.error}
+              description="Evita o desperdício em marcha lenta nas cabines manuais."
+            />
+            <MetricCard
+              accent="warning"
+              icon={<FileText className="h-5 w-5" />}
+              label="Emissão de papel por frequência"
+              value={paperQ.data?.totalValue}
+              unit="g"
+              loading={paperQ.isLoading}
+              error={paperQ.error}
+              description="Redução de cupons térmicos impressos (8x7.5cm)."
+            />
+          </section>
+
+          <section className="mt-6">
+            <div className="mb-3 flex items-baseline justify-between">
+              <h2 className="text-lg font-semibold text-foreground">Progressão acumulada</h2>
+              <span className="text-xs text-muted-foreground">
+                Evolução estimada ao longo do período selecionado
+              </span>
+            </div>
+            <MetricCharts query={query} enabled={isAuthenticated && valid} />
+          </section>
+        </div>
       </main>
 
       <VehiclesModal open={vehiclesOpen} onOpenChange={setVehiclesOpen} />
