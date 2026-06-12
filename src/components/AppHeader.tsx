@@ -23,7 +23,7 @@ export function AppHeader() {
 
   return (
     <header className="text-primary-foreground">
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-8 pt-5 ">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-25 pt-5 ">
         <Link
           to="/dashboard"
           className="flex items-center gap-3 font-bold text-xl hover:opacity-90 transition-opacity"

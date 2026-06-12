@@ -37,8 +37,8 @@ function Dashboard() {
     if (loaded && !isAuthenticated) router.navigate({ to: "/login" });
   }, [loaded, isAuthenticated, router]);
 
-  const [frequency, setFrequency] = useState<number>(5);
-  const [timescaleValue, setTimescaleValue] = useState<number>(1);
+  const [frequency, setFrequency] = useState<number>(0);
+  const [timescaleValue, setTimescaleValue] = useState<number>(0);
   const [timescale, setTimescale] = useState<Timescale>("D");
   const [vehicleId, setVehicleId] = useState<string>("");
   const [vehiclesOpen, setVehiclesOpen] = useState(false);
@@ -96,7 +96,7 @@ function Dashboard() {
       <AppHeader />
 
       <main className="mx-auto max-w-6xl px-6 py-8">
-        <section className="rounded-l border bg-card p-6 shadow-sm">
+        <section className="rounded-l border bg-card p-6 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md">
           <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
             <div>
               <h1 className="text-2xl font-semibold text-primary">
@@ -171,8 +171,16 @@ function Dashboard() {
                 id="tval"
                 type="number"
                 min={1}
+                max={3000}
                 value={timescaleValue}
-                onChange={(e) => setTimescaleValue(Math.max(1, Number(e.target.value) || 1))}
+                onChange={(e) => {
+                  const value = Number(e.target.value);
+                  if (value > 5000) {
+                    return setTimescaleValue(5000);
+                  }
+
+                  setTimescaleValue(Math.max(1, Number(e.target.value) || 1));
+                }}
               />
             </div>
 
@@ -270,7 +278,9 @@ function MetricCard({
   const c = colorMap[accent];
 
   return (
-    <div className={`rounded-l border border-l-4 ${c.border} bg-card p-5 shadow-sm`}>
+    <div
+      className={`rounded-l border border-l-3 border-b-3 ${c.border} bg-card p-5 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md`}
+    >
       <div className="flex items-center justify-between">
         <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
           {label}

@@ -59,8 +59,14 @@ export function VehiclesModal({ open, onOpenChange }: Props) {
   const [editing, setEditing] = useState<Vehicle | null>(null);
   const [confirmDelete, setConfirmDelete] = useState<Vehicle | null>(null);
 
-  const openCreate = () => { setEditing(null); setFormOpen(true); };
-  const openEdit = (v: Vehicle) => { setEditing(v); setFormOpen(true); };
+  const openCreate = () => {
+    setEditing(null);
+    setFormOpen(true);
+  };
+  const openEdit = (v: Vehicle) => {
+    setEditing(v);
+    setFormOpen(true);
+  };
 
   const delMutation = useMutation({
     mutationFn: (id: string) => deleteVehicle(id),
@@ -79,9 +85,7 @@ export function VehiclesModal({ open, onOpenChange }: Props) {
             <DialogTitle className="flex items-center gap-2">
               <Car className="h-5 w-5 text-primary" /> Meus veículos
             </DialogTitle>
-            <DialogDescription>
-              Gerencie os veículos usados nas simulações.
-            </DialogDescription>
+            <DialogDescription>Gerencie os veículos usados nas simulações.</DialogDescription>
           </DialogHeader>
 
           <div className="mb-3 flex justify-end">
@@ -113,11 +117,7 @@ export function VehiclesModal({ open, onOpenChange }: Props) {
                       <Button variant="ghost" size="icon" onClick={() => openEdit(v)}>
                         <Pencil className="h-4 w-4" />
                       </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => setConfirmDelete(v)}
-                      >
+                      <Button variant="ghost" size="icon" onClick={() => setConfirmDelete(v)}>
                         <Trash2 className="h-4 w-4 text-destructive" />
                       </Button>
                     </div>
@@ -135,11 +135,7 @@ export function VehiclesModal({ open, onOpenChange }: Props) {
         </DialogContent>
       </Dialog>
 
-      <VehicleFormDialog
-        open={formOpen}
-        onOpenChange={setFormOpen}
-        editing={editing}
-      />
+      <VehicleFormDialog open={formOpen} onOpenChange={setFormOpen} editing={editing} />
 
       <AlertDialog open={!!confirmDelete} onOpenChange={(o) => !o && setConfirmDelete(null)}>
         <AlertDialogContent>
@@ -189,11 +185,19 @@ function VehicleFormDialog({
       setConsumption(editing.consumption?.toString() ?? "");
       setCo2(editing.co2Emission?.toString() ?? "");
     } else {
-      setName(""); setEngineType("Gasolina"); setConsumption(""); setCo2("");
+      setName("");
+      setEngineType("Gasolina");
+      setConsumption("");
+      setCo2("");
     }
   }, [open, editing]);
 
-  const reset = () => { setName(""); setEngineType("Gasolina"); setConsumption(""); setCo2(""); };
+  const reset = () => {
+    setName("");
+    setEngineType("Gasolina");
+    setConsumption("");
+    setCo2("");
+  };
 
   const mutation = useMutation({
     mutationFn: (dto: VehicleDto) =>
@@ -238,10 +242,14 @@ function VehicleFormDialog({
           <div className="space-y-2">
             <Label>Tipo de motor</Label>
             <Select value={engineType} onValueChange={setEngineType}>
-              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
               <SelectContent>
                 {ENGINE_TYPES.map((t) => (
-                  <SelectItem key={t} value={t}>{t}</SelectItem>
+                  <SelectItem key={t} value={t}>
+                    {t}
+                  </SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -249,13 +257,25 @@ function VehicleFormDialog({
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="cons">Consumo (km/l)</Label>
-              <Input id="cons" type="number" step="0.1" min="0"
-                value={consumption} onChange={(e) => setConsumption(e.target.value)} />
+              <Input
+                id="cons"
+                type="number"
+                step="0.1"
+                min="0"
+                value={consumption}
+                onChange={(e) => setConsumption(e.target.value)}
+              />
             </div>
             <div className="space-y-2">
               <Label htmlFor="co2">Emissão CO₂ (g/km)</Label>
-              <Input id="co2" type="number" step="0.1" min="0"
-                value={co2} onChange={(e) => setCo2(e.target.value)} />
+              <Input
+                id="co2"
+                type="number"
+                step="0.1"
+                min="0"
+                value={co2}
+                onChange={(e) => setCo2(e.target.value)}
+              />
             </div>
           </div>
           <DialogFooter>

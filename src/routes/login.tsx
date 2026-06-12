@@ -65,9 +65,9 @@ function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen bg-gradient-to-br from-primary/10 via-background to-secondary/10 p-4">
+    <div className="flex min-h-screen gap-0">
       {/* Left side - Branding */}
-      <div className="hidden lg:flex w-1/2 items-center justify-center">
+      <div className="hidden lg:flex w-150 items-center justify-center ml-100">
         <div className="space-y-8 text-center max-w-md">
           <div className="space-y-4">
             <div className="flex justify-center">
@@ -76,9 +76,7 @@ function LoginPage() {
             <h1 className="text-5xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
               EcoCalc
             </h1>
-            <p className="text-xl text-muted-foreground">
-              Simulador de Impacto Ambiental
-            </p>
+            <p className="text-xl text-muted-foreground">Simulador de Impacto Ambiental</p>
           </div>
           <div className="space-y-3 text-left">
             <div className="flex gap-3">
@@ -89,29 +87,35 @@ function LoginPage() {
               </div>
               <div>
                 <p className="font-semibold">Calcule Emissões</p>
-                <p className="text-sm text-muted-foreground">Analise o impacto ambiental da sua frota</p>
+                <p className="text-sm text-muted-foreground">
+                  Analise o impacto ambiental da sua frota
+                </p>
               </div>
             </div>
             <div className="flex gap-3">
               <div className="flex-shrink-0">
-                <div className="flex items-center justify-center h-10 w-10 rounded-full bg-secondary/20 text-secondary">
+                <div className="flex items-center justify-center h-10 w-10 rounded-full bg-primary/20 text-primary">
                   ✓
                 </div>
               </div>
               <div>
                 <p className="font-semibold">Economize Combustível</p>
-                <p className="text-sm text-muted-foreground">Otimize suas passagens automatizadas</p>
+                <p className="text-sm text-muted-foreground">
+                  Otimize suas passagens automatizadas
+                </p>
               </div>
             </div>
             <div className="flex gap-3">
               <div className="flex-shrink-0">
-                <div className="flex items-center justify-center h-10 w-10 rounded-full bg-accent/20 text-accent">
+                <div className="flex items-center justify-center h-10 w-10 rounded-full bg-primary/20 text-primary">
                   ✓
                 </div>
               </div>
               <div>
                 <p className="font-semibold">Relatórios ESG</p>
-                <p className="text-sm text-muted-foreground">Acompanhe seus indicadores de sustentabilidade</p>
+                <p className="text-sm text-muted-foreground">
+                  Acompanhe seus indicadores de sustentabilidade
+                </p>
               </div>
             </div>
           </div>
@@ -119,7 +123,7 @@ function LoginPage() {
       </div>
 
       {/* Right side - Login/Register */}
-      <div className="flex w-full lg:w-1/2 items-center justify-center">
+      <div className="flex lg:w-1/5 mt-25 items-center justify-center">
         <div className="w-full max-w-sm">
           <div className="lg:hidden mb-8 flex flex-col items-center gap-3 text-center">
             <img src={logo} alt="Taggy EcoCalc Logo" className="h-20 w-48" />
