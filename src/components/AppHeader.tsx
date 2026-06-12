@@ -22,24 +22,26 @@ export function AppHeader() {
   const displayName = user?.name?.trim() || user?.email || "Conta";
 
   return (
-    <header className="bg-primary text-primary-foreground shadow-sm">
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-        <Link to="/dashboard" className="flex items-center gap-2 font-semibold text-lg">
-          <img src={logo} alt="Taggy EcoCalc Logo" className="h-6 w-19" />
-          EcoCalc
+    <header className="text-primary-foreground">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-8 pt-5 ">
+        <Link
+          to="/dashboard"
+          className="flex items-center gap-3 font-bold text-xl hover:opacity-90 transition-opacity"
+        >
+          <img src={logo} alt="Taggy EcoCalc Logo" className="h-10 w-30" />
         </Link>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="secondary" size="sm" className="gap-2">
+            <Button variant="default" size="sm" className="gap-2 font-semibold">
               <UserIcon className="h-4 w-4" />
-              <span className="max-w-[180px] truncate">{displayName}</span>
+              <span className="max-w-[180px] truncate text-sm">{displayName}</span>
               <ChevronDown className="h-4 w-4 opacity-70" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-48">
-            <DropdownMenuLabel className="truncate">{displayName}</DropdownMenuLabel>
+            <DropdownMenuLabel className="truncate font-semibold">{displayName}</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onSelect={() => setProfileOpen(true)}>
+            <DropdownMenuItem onSelect={() => setProfileOpen(true)} className="cursor-pointer">
               <UserIcon className="mr-2 h-4 w-4" />
               Perfil
             </DropdownMenuItem>
@@ -48,6 +50,7 @@ export function AppHeader() {
                 signOut();
                 router.navigate({ to: "/login" });
               }}
+              className="cursor-pointer text-destructive focus:text-destructive"
             >
               <LogOut className="mr-2 h-4 w-4" />
               Sair
@@ -55,6 +58,7 @@ export function AppHeader() {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
+
       <ProfileModal open={profileOpen} onOpenChange={setProfileOpen} />
     </header>
   );

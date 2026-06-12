@@ -65,87 +65,166 @@ function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-secondary to-background p-4">
-      <div className="w-full max-w-md">
-        <div className="mb-6 flex flex-col items-center gap-2 text-center">
-          <img src={logo} alt="Taggy EcoCalc Logo" className="h-24 w-64" />
-          <h1 className="text-2xl font-semibold ">EcoCalc</h1>
-          <p className="text-sm text-muted-foreground">Acesse o simulador de impacto ambiental</p>
+    <div className="flex min-h-screen bg-gradient-to-br from-primary/10 via-background to-secondary/10 p-4">
+      {/* Left side - Branding */}
+      <div className="hidden lg:flex w-1/2 items-center justify-center">
+        <div className="space-y-8 text-center max-w-md">
+          <div className="space-y-4">
+            <div className="flex justify-center">
+              <img src={logo} alt="Taggy EcoCalc Logo" className="h-32 w-80" />
+            </div>
+            <h1 className="text-5xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+              EcoCalc
+            </h1>
+            <p className="text-xl text-muted-foreground">
+              Simulador de Impacto Ambiental
+            </p>
+          </div>
+          <div className="space-y-3 text-left">
+            <div className="flex gap-3">
+              <div className="flex-shrink-0">
+                <div className="flex items-center justify-center h-10 w-10 rounded-full bg-primary/20 text-primary">
+                  ✓
+                </div>
+              </div>
+              <div>
+                <p className="font-semibold">Calcule Emissões</p>
+                <p className="text-sm text-muted-foreground">Analise o impacto ambiental da sua frota</p>
+              </div>
+            </div>
+            <div className="flex gap-3">
+              <div className="flex-shrink-0">
+                <div className="flex items-center justify-center h-10 w-10 rounded-full bg-secondary/20 text-secondary">
+                  ✓
+                </div>
+              </div>
+              <div>
+                <p className="font-semibold">Economize Combustível</p>
+                <p className="text-sm text-muted-foreground">Otimize suas passagens automatizadas</p>
+              </div>
+            </div>
+            <div className="flex gap-3">
+              <div className="flex-shrink-0">
+                <div className="flex items-center justify-center h-10 w-10 rounded-full bg-accent/20 text-accent">
+                  ✓
+                </div>
+              </div>
+              <div>
+                <p className="font-semibold">Relatórios ESG</p>
+                <p className="text-sm text-muted-foreground">Acompanhe seus indicadores de sustentabilidade</p>
+              </div>
+            </div>
+          </div>
         </div>
+      </div>
 
-        <div className="rounded-xl border bg-card p-6 shadow-sm">
-          <Tabs value={tab} onValueChange={setTab}>
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="login">Entrar</TabsTrigger>
-              <TabsTrigger value="register">Cadastrar</TabsTrigger>
-            </TabsList>
+      {/* Right side - Login/Register */}
+      <div className="flex w-full lg:w-1/2 items-center justify-center">
+        <div className="w-full max-w-sm">
+          <div className="lg:hidden mb-8 flex flex-col items-center gap-3 text-center">
+            <img src={logo} alt="Taggy EcoCalc Logo" className="h-20 w-48" />
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+              EcoCalc
+            </h1>
+          </div>
 
-            <TabsContent value="login">
-              <form onSubmit={onLogin} className="mt-4 space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="email">E-mail</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="password">Senha</Label>
-                  <Input
-                    id="password"
-                    type="password"
-                    required
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                  />
-                </div>
-                <Button type="submit" className="w-full" disabled={loading}>
-                  {loading ? "Entrando…" : "Entrar"}
-                </Button>
-              </form>
-            </TabsContent>
+          <div className="bg-card rounded-2xl border-2 border-border p-8 shadow-xl">
+            <Tabs value={tab} onValueChange={setTab} className="w-full">
+              <TabsList className="grid w-full grid-cols-2 bg-muted/50">
+                <TabsTrigger value="login" className="text-sm font-semibold">
+                  Entrar
+                </TabsTrigger>
+                <TabsTrigger value="register" className="text-sm font-semibold">
+                  Cadastrar
+                </TabsTrigger>
+              </TabsList>
 
-            <TabsContent value="register">
-              <form onSubmit={onRegister} className="mt-4 space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="rname">Nome</Label>
-                  <Input
-                    id="rname"
-                    required
-                    value={rName}
-                    onChange={(e) => setRName(e.target.value)}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="remail">E-mail</Label>
-                  <Input
-                    id="remail"
-                    type="email"
-                    required
-                    value={rEmail}
-                    onChange={(e) => setREmail(e.target.value)}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="rpassword">Senha</Label>
-                  <Input
-                    id="rpassword"
-                    type="password"
-                    required
-                    minLength={6}
-                    value={rPassword}
-                    onChange={(e) => setRPassword(e.target.value)}
-                  />
-                </div>
-                <Button type="submit" className="w-full" disabled={loading}>
-                  {loading ? "Criando…" : "Criar conta"}
-                </Button>
-              </form>
-            </TabsContent>
-          </Tabs>
+              <TabsContent value="login" className="space-y-5 mt-6">
+                <form onSubmit={onLogin} className="space-y-5">
+                  <div className="space-y-3">
+                    <Label htmlFor="email" className="text-sm font-semibold">
+                      E-mail
+                    </Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      required
+                      placeholder="você@example.com"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                    />
+                  </div>
+                  <div className="space-y-3">
+                    <Label htmlFor="password" className="text-sm font-semibold">
+                      Senha
+                    </Label>
+                    <Input
+                      id="password"
+                      type="password"
+                      required
+                      placeholder="••••••••"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                    />
+                  </div>
+                  <Button type="submit" className="w-full h-11 text-base" disabled={loading}>
+                    {loading ? "Entrando…" : "Entrar"}
+                  </Button>
+                </form>
+              </TabsContent>
+
+              <TabsContent value="register" className="space-y-5 mt-6">
+                <form onSubmit={onRegister} className="space-y-5">
+                  <div className="space-y-3">
+                    <Label htmlFor="rname" className="text-sm font-semibold">
+                      Nome Completo
+                    </Label>
+                    <Input
+                      id="rname"
+                      required
+                      placeholder="Seu Nome"
+                      value={rName}
+                      onChange={(e) => setRName(e.target.value)}
+                    />
+                  </div>
+                  <div className="space-y-3">
+                    <Label htmlFor="remail" className="text-sm font-semibold">
+                      E-mail
+                    </Label>
+                    <Input
+                      id="remail"
+                      type="email"
+                      required
+                      placeholder="você@example.com"
+                      value={rEmail}
+                      onChange={(e) => setREmail(e.target.value)}
+                    />
+                  </div>
+                  <div className="space-y-3">
+                    <Label htmlFor="rpassword" className="text-sm font-semibold">
+                      Senha
+                    </Label>
+                    <Input
+                      id="rpassword"
+                      type="password"
+                      required
+                      minLength={6}
+                      placeholder="Mínimo 6 caracteres"
+                      value={rPassword}
+                      onChange={(e) => setRPassword(e.target.value)}
+                    />
+                  </div>
+                  <Button type="submit" className="w-full h-11 text-base" disabled={loading}>
+                    {loading ? "Criando…" : "Criar Conta"}
+                  </Button>
+                </form>
+              </TabsContent>
+            </Tabs>
+          </div>
+
+          <p className="text-center text-xs text-muted-foreground mt-6">
+            Protegido por criptografia end-to-end
+          </p>
         </div>
       </div>
     </div>

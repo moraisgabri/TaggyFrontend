@@ -8,7 +8,6 @@ import {
   getEmission,
   getFuelSaving,
   getPaperEmission,
-  downloadEsgReport,
   type Timescale,
 } from "@/lib/api";
 import { AppHeader } from "@/components/AppHeader";
@@ -84,20 +83,6 @@ function Dashboard() {
 
   const [emissionQ, fuelQ, paperQ] = results;
 
-  const handleDownloadEsgReport = async () => {
-    try {
-      await downloadEsgReport({
-        emission: emissionQ.data?.totalValue ?? 0,
-        fuel: fuelQ.data?.totalValue ?? 0,
-        paper: paperQ.data?.totalValue ?? 0,
-        frequency,
-      });
-    } catch (error) {
-      console.error("Erro ao baixar relatório:", error);
-      // Você pode adicionar um toast de erro aqui se desejar
-    }
-  };
-
   if (!loaded || !isAuthenticated) {
     return (
       <div className="flex min-h-screen items-center justify-center">
@@ -111,7 +96,7 @@ function Dashboard() {
       <AppHeader />
 
       <main className="mx-auto max-w-6xl px-6 py-8">
-        <section className="rounded-2xl border bg-card p-6 shadow-sm">
+        <section className="rounded-l border bg-card p-6 shadow-sm">
           <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
             <div>
               <h1 className="text-2xl font-semibold text-primary">
@@ -123,7 +108,7 @@ function Dashboard() {
             </div>
 
             <div className="flex flex-wrap gap-2">
-              <Button variant="outline" onClick={() => setVehiclesOpen(true)}>
+              <Button variant="default" onClick={() => setVehiclesOpen(true)}>
                 <Settings2 className="mr-2 h-4 w-4" /> Gerenciar veículos
               </Button>
 
@@ -134,7 +119,10 @@ function Dashboard() {
                 <Download className="mr-2 h-4 w-4" /> Exportar Dashboard
               </Button>
 
-              <Button variant="outline" onClick={handleDownloadEsgReport}>
+              <Button
+                variant="outline"
+                onClick={() => exportDashboardPdf(exportRef.current, "esg-report.pdf")}
+              >
                 <Download className="mr-2 h-4 w-4" /> Relatório ESG
               </Button>
             </div>
@@ -275,14 +263,14 @@ function MetricCard({
   description: string;
 }) {
   const colorMap = {
-    success: { border: "border-l-success", text: "text-success", bg: "bg-success/10" },
-    info: { border: "border-l-info", text: "text-info", bg: "bg-info/10" },
-    warning: { border: "border-l-warning", text: "text-warning", bg: "bg-warning/10" },
+    success: { border: "border-success", text: "text-success", bg: "bg-success/10" },
+    info: { border: "border-info", text: "text-info", bg: "bg-info/10" },
+    warning: { border: "border-warning", text: "text-warning", bg: "bg-warning/10" },
   } as const;
   const c = colorMap[accent];
 
   return (
-    <div className={`rounded-xl border border-l-4 ${c.border} bg-card p-5 shadow-sm`}>
+    <div className={`rounded-l border border-l-4 ${c.border} bg-card p-5 shadow-sm`}>
       <div className="flex items-center justify-between">
         <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
           {label}

@@ -82,7 +82,7 @@ function ChartCard({
   const gradId = `grad-${accent}`;
 
   return (
-    <div className="rounded-xl border bg-card p-5 shadow-sm">
+    <div className="rounded-l border bg-card p-5 shadow-sm">
       <div className="mb-3 flex items-baseline justify-between">
         <h3 className="text-sm font-semibold text-foreground">{title}</h3>
         <span className="text-xs text-muted-foreground">acumulado ({unit})</span>
